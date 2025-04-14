@@ -207,4 +207,3 @@ If users report a bug, you can create a new branch called `bugfix-crash-on-timer
 
 Git is not just a tool to store code. It’s a system that reflects the **real dynamics of creative work**: parallel ideas, experimentation, review, and assembly.
 
-Would you like me to now follow this with the underlying object model (blobs, trees, commits) showing how Git internally tracks this evolution with content hashes?
