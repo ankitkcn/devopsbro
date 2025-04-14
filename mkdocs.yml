@@ -2,3 +2,23 @@ site_name: Devopbros
 site_url: https://mydomain.org/mysite
 theme:
   name: material
+  features:
+    - search.suggest
+    - navigation.tabs
+    - navigation.expand
+  palette:
+      - scheme: "black"
+        toggle: 
+          icon: material/brightness-7 
+          name: Switch to dark mode
+      - scheme: slate
+        toggle:
+          icon: material/brightness-4
+          name: Switch to light mode
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
