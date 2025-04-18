@@ -1,6 +1,6 @@
 title: GIT Basics
 
-### Version Control Systems
+## Version Control Systems
 
 A **Version Control System (VCS)** is a software tool that tracks and manages changes to files, allowing multiple versions of the same file to exist over time. It enables developers to collaborate, revert to previous states, examine changes, and maintain a historical record of a project’s evolution.
 
@@ -8,7 +8,7 @@ The fundamental purpose of a VCS is to prevent loss of work, support collaborati
 
 ---
 
-### Early Forms of Version Control (Before Git)
+## Early Forms of Version Control (Before Git)
 
 Prior to Git and modern distributed systems, version control was centralized. The most notable tools included **CVS (Concurrent Versions System)** and **Subversion (SVN)**. In these systems, there existed a **central repository** which all users would connect to for updates and commits.
 
@@ -35,7 +35,7 @@ This approach had several limitations:
 
 ---
 
-### Git and Distributed Version Control
+## Git and Distributed Version Control
 
 Git introduced a **distributed model** of version control. Every developer has a **complete copy** of the repository, including the full history, branches, and tags.
 
@@ -62,7 +62,7 @@ Git also introduced a **content-addressable storage model**, where each file and
 
 ---
 
-### Summary of Key Differences
+#### Summary of Key Differences
 
 | Feature                     | Centralized VCS (CVS/SVN)         | Distributed VCS (Git)        |
 |----------------------------|-----------------------------------|------------------------------|
@@ -75,7 +75,7 @@ Git also introduced a **content-addressable storage model**, where each file and
 
 ---
 
-### Evolution of Version Control
+## Evolution of Version Control
 
 ```mermaid
 timeline
@@ -89,7 +89,7 @@ timeline
 
 Each phase marked a progression in how collaboration and code integrity were handled, culminating in the robust and distributed systems used today.
 
-### A Conceptual Walkthrough: How Git Works in Real Projects
+## A Conceptual Walkthrough: How Git Works in Real Projects
 
 ---
 
@@ -125,6 +125,46 @@ Git changed everything.
 Instead of tracking changes line-by-line, Git thinks in **snapshots**. At every commit, Git stores a complete picture of what the entire project looks like — not by copying every file again, but by **referencing** files that haven’t changed and **storing only the new ones**.
 
 Imagine every commit as a full photograph of your project at a moment in time. Files that remain unchanged just get reused from previous snapshots — so Git remains fast and efficient.
+```mermaid
+graph LR
+  %% Version labels
+  V1["Version 1"]
+  V2["Version 2"]
+  V3["Version 3"]
+  V4["Version 4"]
+  V5["Version 5"]
+  V6["Version 6"]
+
+  %% Version 1 files
+  V1 --> A1["File A"]
+  V1 --> B1["File B"]
+  V1 --> C1["File C"]
+
+  %% Version 2: A changed to A1, C to C2
+  V2 --> A2["A1"]
+  V2 --> B1
+  V2 --> C2["C2"]
+
+  %% Version 3: only B changes to B1
+  V3 --> A2
+  V3 --> B2["B1"]
+  V3 --> C2
+
+  %% Version 4: A changes to A2
+  V4 --> A3["A2"]
+  V4 --> B2
+  V4 --> C2
+
+  %% Version 5: all three files change
+  V5 --> A4["A3"]
+  V5 --> B3["B2"]
+  V5 --> C3["C3"]
+
+  %% Version 6: no changes from V5
+  V6 --> A4
+  V6 --> B3
+  V6 --> C3
+```
 
 ---
 
@@ -207,3 +247,118 @@ If users report a bug, you can create a new branch called `bugfix-crash-on-timer
 
 Git is not just a tool to store code. It’s a system that reflects the **real dynamics of creative work**: parallel ideas, experimentation, review, and assembly.
 
+### Git Generally Only Adds Data
+
+Git is designed in such a way that almost everything you do with it **adds** data to the database. It **very rarely deletes** anything. This is one of the biggest reasons developers trust Git: once a change is **committed**, it is very hard to lose.
+
+For example, suppose you're writing a file called `chapter1.txt`. You make changes to it, save the file, and then commit it using Git. That commit becomes a **snapshot** — a permanent record. Even if you later change or delete that file, Git still keeps the original version in the history. You can always go back and recover it.
+
+You can still lose changes **you haven’t committed yet** (such as unsaved edits in your code editor or changes you made but didn’t `git add` and `git commit`). But once you’ve made a commit, that data is saved inside Git’s internal database.
+
+If you also **push** your repository to a remote server like GitHub, your work is doubly safe: it’s saved on your computer **and** backed up somewhere else.
+
+---
+
+### The Three States of a File in Git
+
+Every file tracked by Git lives in **one of three states** at any given time:
+
+1. **Modified**  
+   You’ve changed the file, but Git doesn’t know yet what you want to do with it. It’s just sitting in your working directory, different from what Git has saved last time.
+
+2. **Staged**  
+   You told Git, “I want to save this version of the file next time I make a snapshot.” You do this using the `git add` command. Git now knows exactly which version of the file to include in the next commit.
+
+3. **Committed**  
+   The file is saved forever in Git’s database. You used `git commit`, and Git took a snapshot of the staged version of the file.
+
+---
+
+### Real-World Example
+
+Suppose you're working on a file called `notes.txt`.
+
+- You write a new paragraph.  
+  Now it's **modified**.
+  
+- You run `git add notes.txt`.  
+  Now it’s **staged**.
+
+- You run `git commit -m "Added intro paragraph"`  
+  Now it’s **committed**.
+
+If you go back and write more, the file becomes **modified** again — and the cycle repeats.
+
+---
+
+### Git’s Three Areas: Where Your File Lives
+
+Each of the above states happens in one of **three areas** that make up a Git project:
+
+| Git Area        | Description                                                                 |
+|------------------|------------------------------------------------------------------------------|
+| **Working Tree** | This is where you edit files. It shows the current version of your project. |
+| **Staging Area** | This is a middle place where you list what will go into your next commit.   |
+| **Git Directory**| This is Git’s database. It holds all the history and snapshots you commit.  |
+
+---
+
+### How It Works Together
+
+Here’s how Git moves your file through these three areas:
+
+```mermaid
+flowchart LR
+    A[Working Tree<br>Modified File] -->|git add| B[Staging Area<br>Ready to Commit]
+    B -->|git commit| C[Git Directory<br>History Saved]
+    C -->|git checkout| A
+```
+
+Let’s follow this with the `notes.txt` example:
+
+- You change something in `notes.txt`. Now it’s modified in the **Working Tree**.
+- You run `git add notes.txt`. Git copies that version into the **Staging Area**.
+- You run `git commit`. Git writes that file’s snapshot into the **Git Directory** (the actual database).
+- If needed, you can later restore that version into the **Working Tree** using `git checkout`.
+
+---
+
+### Table of File States and Commands
+
+| File State  | Description                                           | Action to Move Forward      |
+|-------------|-------------------------------------------------------|-----------------------------|
+| Modified    | You changed the file but haven't told Git about it.   | `git add`                   |
+| Staged      | File is ready for the next commit.                    | `git commit`                |
+| Committed   | File is saved in Git's history permanently.           | `git checkout`, `git reset` |
+
+---
+
+### Diagram: States and Transitions
+
+```mermaid
+stateDiagram-v2
+    [*] --> Untracked : new file created
+    Untracked --> Modified : file saved
+    Modified --> Staged : git add
+    Staged --> Committed : git commit
+    Committed --> Modified : file edited again
+```
+
+---
+
+### Why This Is Powerful
+
+Because Git stores each committed version like a snapshot, you can:
+
+- Undo mistakes
+- Recover deleted work
+- Try new ideas safely
+- Compare older versions
+- Share changes with others
+- Go back in time
+
+Even if you mess something up, the committed versions are still there — and Git can help you get back to a clean state.
+
+This model also makes Git safe and fast. Most operations happen **locally**, without needing internet or a server.
+
+In the next section, you will learn how Git stores these committed snapshots using *objects* (blobs, trees, commits), and how they are connected in Git’s internal database.
