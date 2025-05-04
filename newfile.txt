@@ -2,7 +2,9 @@ Short answer:
 Yes, you can stage a file multiple times in Git — but what that means depends on the context. It's not like it gets stacked up in layers or anything. Each staging replaces the previous one for that file.
 
 Here's what happens:
-HELLO THERE i am here! When you stage a file (git add file.txt), Git adds the current version of that file to the index (also known as the staging area).
+
+Hola THERE i am here! When you stage a file (git add file.txt), Git adds the current version of that file to the index (also known as the staging area).
+
 
 If you edit the file again after staging and then stage it again, Git doesn't stack the changes — it simply updates the staged version to reflect the latest content.
 
