@@ -1,0 +1,2030 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://mydomain.org/mysite/Progress/Quick%20Revision%20GIT/03%20-%20Undoing%20Things/">
+      
+      
+        <link rel="prev" href="../02%20-%20File%20Management/">
+      
+      
+        <link rel="next" href="../04%20-%20Branching/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Undoing Things - Devopbros</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="black" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#undoing-things-in-git-a-deep-dive-into-amend-revert-restore-reset-clean-and-reflog" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Devopbros" class="md-header__button md-logo" aria-label="Devopbros" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Devopbros
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Undoing Things
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="black" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../00%20-%20Installing%20Python%20and%20setting%20up%20venv/" class="md-tabs__link">
+          
+  
+  
+  Progress
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Devopbros" class="md-nav__button md-logo" aria-label="Devopbros" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Devopbros
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Progress
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Progress
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00%20-%20Installing%20Python%20and%20setting%20up%20venv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installing python and setting up venv
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/Curious%20Case%20of%20-wx%20permission/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Curious Case of  wx permission
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/File%20permissions%20directories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    File permissions directories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/Group%20Commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Group Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/Source%20Command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Understanding the source Command in Unix Shells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/When%20to%20use%20Double%20Quotes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    When to use Double Quotes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Quick Revision GIT
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Quick Revision GIT
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%20Setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Set-up Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02%20-%20File%20Management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Git Repository Setup and File State Management
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Undoing Things
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Undoing Things
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-git-commit-amend-refining-the-most-recent-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. git commit --amend: Refining the Most Recent Commit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. git commit --amend: Refining the Most Recent Commit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-affected" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layer Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-git-revert-creating-an-inverse-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. git revert: Creating an Inverse Commit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. git revert: Creating an Inverse Commit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-affected_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layer Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-git-restore-replacing-file-content-from-index-or-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. git restore: Replacing File Content from Index or Commit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. git restore: Replacing File Content from Index or Commit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layers-affected" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layers Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-git-reset-moving-head-and-rewriting-indexworktree" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. git reset: Moving HEAD and Rewriting Index/Worktree
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. git reset: Moving HEAD and Rewriting Index/Worktree">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layers-affected_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layers Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-git-clean-removing-untracked-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. git clean: Removing Untracked Files
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. git clean: Removing Untracked Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-affected_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layer Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-git-reflog-recovering-from-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. git reflog: Recovering from Mistakes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. git reflog: Recovering from Mistakes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-affected_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layer Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-table-what-each-command-undoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary Table: What Each Command Undoes
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04%20-%20Branching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Git Branching: Advanced Guide with Internals and Best Practices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05%20-%20Merging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Merging and Rebasing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../temp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Temp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-git-commit-amend-refining-the-most-recent-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. git commit --amend: Refining the Most Recent Commit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. git commit --amend: Refining the Most Recent Commit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-affected" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layer Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-git-revert-creating-an-inverse-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. git revert: Creating an Inverse Commit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. git revert: Creating an Inverse Commit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-affected_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layer Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-git-restore-replacing-file-content-from-index-or-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. git restore: Replacing File Content from Index or Commit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. git restore: Replacing File Content from Index or Commit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layers-affected" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layers Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-git-reset-moving-head-and-rewriting-indexworktree" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. git reset: Moving HEAD and Rewriting Index/Worktree
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. git reset: Moving HEAD and Rewriting Index/Worktree">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layers-affected_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layers Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-git-clean-removing-untracked-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. git clean: Removing Untracked Files
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. git clean: Removing Untracked Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-affected_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layer Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-git-reflog-recovering-from-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. git reflog: Recovering from Mistakes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. git reflog: Recovering from Mistakes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-affected_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layer Affected
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works-internally_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works Internally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-examples_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cautions_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cautions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-table-what-each-command-undoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary Table: What Each Command Undoes
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="undoing-things-in-git-a-deep-dive-into-amend-revert-restore-reset-clean-and-reflog"><strong>Undoing Things in Git: A Deep Dive into <code>amend</code>, <code>revert</code>, <code>restore</code>, <code>reset</code>, <code>clean</code>, and <code>reflog</code></strong></h1>
+<p>Git is a content-addressable version control system built on immutable snapshots. Unlike traditional version control systems that track file changes as deltas, Git takes a fundamentally different approach: it captures entire snapshots of your file tree and stores them as <strong>blobs</strong>, <strong>trees</strong>, and <strong>commits</strong>, which are interconnected through a directed acyclic graph (DAG). This architectural decision empowers Git with remarkable flexibility in revising history, recovering from mistakes, and restructuring your development timeline.</p>
+<p>However, with this power comes complexity: when developers ask “How do I undo something in Git?”, there is no single answer. The “right” tool depends on the layer you’re operating on—working directory, index, or commit history—and on the scope: Are you correcting a typo in the last commit? Removing untracked files? Rewinding the branch tip? Or recovering a lost commit?</p>
+<p>This guide explains, with complete conceptual detail and practical use cases, the six core Git tools for undoing things:</p>
+<ul>
+<li><code>git commit --amend</code></li>
+<li><code>git revert</code></li>
+<li><code>git restore</code></li>
+<li><code>git reset</code></li>
+<li><code>git clean</code></li>
+<li><code>git reflog</code></li>
+</ul>
+<p>Each section focuses on <strong>what it changes</strong>, <strong>why it exists</strong>, <strong>how it works internally</strong>, <strong>when to use it</strong>, and <strong>common mistakes to avoid</strong>.</p>
+<hr />
+<h2 id="1-git-commit-amend-refining-the-most-recent-commit">1. <code>git commit --amend</code>: Refining the Most Recent Commit</h2>
+<h3 id="purpose">Purpose</h3>
+<p>To replace the current tip of the branch with a modified version, optionally changing the content, message, or metadata of the most recent commit.</p>
+<h3 id="layer-affected">Layer Affected</h3>
+<ul>
+<li><strong>Repository</strong> (rewrites the tip commit)</li>
+</ul>
+<h3 id="how-it-works-internally">How It Works Internally</h3>
+<ul>
+<li>
+<p>When you run <code>git commit --amend</code>, Git:</p>
+</li>
+<li>
+<p>Reads the current <code>HEAD</code> commit and its parent.</p>
+</li>
+<li>Prepares a new commit object, possibly with a new tree (if index differs).</li>
+<li>Reuses the same parent as the previous tip.</li>
+<li>Updates the branch ref to point to the new commit.</li>
+<li>The old commit becomes <strong>dangling</strong> (i.e., unreachable from a ref) but remains in <code>.git/objects</code>.</li>
+</ul>
+<h3 id="use-cases">Use Cases</h3>
+<ul>
+<li>You committed prematurely and forgot to add a file.</li>
+<li>You need to correct a typo or clarify the commit message.</li>
+<li>You staged more changes and want them included in the same commit as before.</li>
+</ul>
+<h3 id="command-examples">Command Examples</h3>
+<pre><code class="language-bash"># Add a missing file and amend the last commit
+git add forgotten_file.txt
+git commit --amend
+
+# Change the commit message only
+git commit --amend -m &quot;Fix typo and update README&quot;
+
+# Keep message but update timestamp and author
+git commit --amend --no-edit --reset-author
+</code></pre>
+<h3 id="cautions">Cautions</h3>
+<ul>
+<li><strong>Avoid amending commits that are already pushed</strong> to a shared branch unless you force-push and warn collaborators.</li>
+<li>Amended commits have <strong>new hashes</strong>; the old versions are still present until garbage collected.</li>
+</ul>
+<hr />
+<h2 id="2-git-revert-creating-an-inverse-commit">2. <code>git revert</code>: Creating an Inverse Commit</h2>
+<h3 id="purpose_1">Purpose</h3>
+<p>To <strong>undo the effects</strong> of a previous commit by creating a new commit that reverses its changes. Unlike <code>reset</code> or <code>amend</code>, <code>revert</code> <strong>preserves history</strong>.</p>
+<h3 id="layer-affected_1">Layer Affected</h3>
+<ul>
+<li><strong>Repository</strong> (adds a new commit to undo previous one)</li>
+</ul>
+<h3 id="how-it-works-internally_1">How It Works Internally</h3>
+<ul>
+<li>Git calculates the patch introduced by the target commit and applies the <strong>inverse</strong> of that patch to the current tree.</li>
+<li>A <strong>new commit</strong> is created with that inverse diff, referencing the current HEAD as its parent.</li>
+</ul>
+<h3 id="use-cases_1">Use Cases</h3>
+<ul>
+<li>You want to undo a bad commit on a public branch <strong>without rewriting history</strong>.</li>
+<li>You need to back out of a feature or hotfix that introduced regressions.</li>
+<li>You want to make the undo visible and traceable in history.</li>
+</ul>
+<h3 id="command-examples_1">Command Examples</h3>
+<pre><code class="language-bash"># Revert the most recent commit
+git revert HEAD
+
+# Revert a specific commit by SHA
+git revert abc1234
+
+# Revert a merge commit (you must specify the parent)
+git revert -m 1 d3f4567
+</code></pre>
+<h3 id="cautions_1">Cautions</h3>
+<ul>
+<li><strong>Conflicts may occur</strong>, especially if subsequent commits modified the same lines.</li>
+<li>You can “undo a revert” by reverting the revert commit (effectively reapplying the original patch).</li>
+</ul>
+<hr />
+<h2 id="3-git-restore-replacing-file-content-from-index-or-commit">3. <code>git restore</code>: Replacing File Content from Index or Commit</h2>
+<h3 id="purpose_2">Purpose</h3>
+<p>To <strong>restore the content of files</strong> from either the index (staging area) or a previous commit to the working directory or index.</p>
+<h3 id="layers-affected">Layers Affected</h3>
+<ul>
+<li><strong>Working Directory</strong></li>
+<li><strong>Index</strong> (optional)</li>
+</ul>
+<h3 id="how-it-works-internally_2">How It Works Internally</h3>
+<ul>
+<li><code>git restore</code> copies the file content from the specified source (default is index or <code>HEAD</code>) into the working directory and/or index.</li>
+<li>Does <strong>not create a new commit</strong> or affect <code>HEAD</code>.</li>
+</ul>
+<h3 id="use-cases_2">Use Cases</h3>
+<ul>
+<li>Discarding uncommitted changes to a file.</li>
+<li>Unstaging a file without modifying its content.</li>
+<li>Reverting a file to an earlier version from history.</li>
+</ul>
+<h3 id="command-examples_2">Command Examples</h3>
+<pre><code class="language-bash"># Discard changes in working directory (from index)
+git restore my_file.txt
+
+# Unstage a file (index ← HEAD)
+git restore --staged my_file.txt
+
+# Restore from a previous commit
+git restore --source=HEAD~2 --staged --worktree my_file.txt
+</code></pre>
+<h3 id="cautions_2">Cautions</h3>
+<ul>
+<li>Files restored from the index or earlier commits <strong>overwrite</strong> local modifications—ensure you don’t lose important unsaved work.</li>
+<li><code>git restore</code> is safe but <strong>not reversible</strong> unless you have a stash or prior commit.</li>
+</ul>
+<hr />
+<h2 id="4-git-reset-moving-head-and-rewriting-indexworktree">4. <code>git reset</code>: Moving HEAD and Rewriting Index/Worktree</h2>
+<h3 id="purpose_3">Purpose</h3>
+<p>To move the current branch’s tip (and <code>HEAD</code>) to another commit, optionally resetting the index and working directory to match it.</p>
+<h3 id="layers-affected_1">Layers Affected</h3>
+<ul>
+<li><strong>Repository</strong></li>
+<li><strong>Index</strong></li>
+<li><strong>Working Directory</strong> (depending on mode)</li>
+</ul>
+<h3 id="how-it-works-internally_3">How It Works Internally</h3>
+<ul>
+<li>Git moves <code>HEAD</code> and the current branch ref to a different commit.</li>
+<li>
+<p>Based on the mode:</p>
+</li>
+<li>
+<p><code>--soft</code>: leaves index and working directory unchanged.</p>
+</li>
+<li><code>--mixed</code>: resets the index to match new HEAD, but leaves working directory.</li>
+<li><code>--hard</code>: resets everything, including working files, to new HEAD.</li>
+</ul>
+<h3 id="use-cases_3">Use Cases</h3>
+<ul>
+<li>You want to rework recent commits (soft).</li>
+<li>You want to unstage all changes (mixed).</li>
+<li>You want to discard all local work and roll back to a clean state (hard).</li>
+<li>You need to “uncommit” without losing content.</li>
+</ul>
+<h3 id="command-examples_3">Command Examples</h3>
+<pre><code class="language-bash"># Undo last commit, keep changes staged
+git reset --soft HEAD~1
+
+# Undo commit and unstage changes
+git reset --mixed HEAD~1
+
+# Remove last two commits and all associated changes
+git reset --hard HEAD~2
+
+# Unstage a specific file
+git reset HEAD file.txt
+</code></pre>
+<h3 id="cautions_3">Cautions</h3>
+<ul>
+<li><code>--hard</code> permanently discards working directory changes; it’s <strong>destructive</strong>.</li>
+<li>After reset, previous commits become dangling unless referenced or recovered via <code>reflog</code>.</li>
+</ul>
+<hr />
+<h2 id="5-git-clean-removing-untracked-files">5. <code>git clean</code>: Removing Untracked Files</h2>
+<h3 id="purpose_4">Purpose</h3>
+<p>To <strong>delete untracked files and directories</strong> from the working directory, including optionally ignored files.</p>
+<h3 id="layer-affected_2">Layer Affected</h3>
+<ul>
+<li><strong>Working Directory</strong> (only untracked and ignored content)</li>
+</ul>
+<h3 id="how-it-works-internally_4">How It Works Internally</h3>
+<ul>
+<li>
+<p>Git scans the working directory for files that:</p>
+</li>
+<li>
+<p>Are not in the index.</p>
+</li>
+<li>Are not part of any commit.</li>
+<li>It then deletes them according to the flags.</li>
+</ul>
+<h3 id="use-cases_4">Use Cases</h3>
+<ul>
+<li>Cleaning up build artifacts or editor-generated files.</li>
+<li>Getting back to a "pristine" working tree.</li>
+<li>Removing ignored files like logs or <code>.DS_Store</code>.</li>
+</ul>
+<h3 id="command-examples_4">Command Examples</h3>
+<pre><code class="language-bash"># Preview deletion
+git clean -nfd
+
+# Delete untracked files and directories
+git clean -fd
+
+# Delete ignored files too
+git clean -fdx
+</code></pre>
+<h3 id="cautions_4">Cautions</h3>
+<ul>
+<li><strong>Destructive and irreversible</strong>: Git cannot recover deleted untracked files.</li>
+<li>Always run <code>git clean -n</code> first to preview.</li>
+</ul>
+<hr />
+<h2 id="6-git-reflog-recovering-from-mistakes">6. <code>git reflog</code>: Recovering from Mistakes</h2>
+<h3 id="purpose_5">Purpose</h3>
+<p>To <strong>track all changes to HEAD and branch refs</strong>, even if commits are no longer reachable from any branch or tag.</p>
+<h3 id="layer-affected_3">Layer Affected</h3>
+<ul>
+<li><strong>Ref History</strong> (tracking of branch pointer movements)</li>
+</ul>
+<h3 id="how-it-works-internally_5">How It Works Internally</h3>
+<ul>
+<li>Git records every change to <code>HEAD</code> (e.g., commit, reset, checkout, merge, amend) in <code>.git/logs/HEAD</code> and <code>.git/logs/refs/heads/&lt;branch&gt;</code>.</li>
+</ul>
+<h3 id="use-cases_5">Use Cases</h3>
+<ul>
+<li>Recovering commits lost after a reset, rebase, or amend.</li>
+<li>Locating a previously checked-out commit.</li>
+<li>Finding a working state before a mistake.</li>
+</ul>
+<h3 id="command-examples_5">Command Examples</h3>
+<pre><code class="language-bash"># Show movement history of HEAD
+git reflog
+
+# Reset to a previous position
+git reset --hard HEAD@{3}
+
+# Create a branch from a reflog commit
+git checkout -b recovered HEAD@{4}
+</code></pre>
+<h3 id="cautions_5">Cautions</h3>
+<ul>
+<li>Reflog entries expire after 90 days (by default) or after garbage collection (<code>git gc</code>).</li>
+<li>If you perform destructive operations (<code>reset --hard</code>, <code>clean</code>, <code>checkout</code>), check <code>reflog</code> immediately if anything is lost.</li>
+</ul>
+<hr />
+<h2 id="summary-table-what-each-command-undoes">Summary Table: What Each Command Undoes</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Undo Scope</th>
+<th>Preserves History?</th>
+<th>Affects HEAD?</th>
+<th>Destructive?</th>
+<th>Reversible via Reflog?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>commit --amend</code></td>
+<td>Last commit content/message</td>
+<td>✘ (rewrites)</td>
+<td>✔</td>
+<td>No</td>
+<td>✔</td>
+</tr>
+<tr>
+<td><code>revert</code></td>
+<td>Any past commit</td>
+<td>✔</td>
+<td>✔</td>
+<td>No</td>
+<td>N/A (non-destructive)</td>
+</tr>
+<tr>
+<td><code>restore</code></td>
+<td>File content in index or worktree</td>
+<td>✔</td>
+<td>✘</td>
+<td>Possibly</td>
+<td>No (unless committed)</td>
+</tr>
+<tr>
+<td><code>reset</code></td>
+<td>Branch tip and optionally index/worktree</td>
+<td>✘ (rewrites)</td>
+<td>✔</td>
+<td>Yes (in <code>--hard</code>)</td>
+<td>✔</td>
+</tr>
+<tr>
+<td><code>clean</code></td>
+<td>Untracked and ignored files</td>
+<td>N/A</td>
+<td>✘</td>
+<td>Yes</td>
+<td>✘</td>
+</tr>
+<tr>
+<td><code>reflog</code></td>
+<td>Restores any lost <code>HEAD</code> or commit</td>
+<td>N/A</td>
+<td>✘ (read-only)</td>
+<td>No</td>
+<td>✔</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["search.suggest", "navigation.tabs", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1738 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://mydomain.org/mysite/Progress/Quick%20Revision%20GIT/05%20-%20Merging/">
+      
+      
+        <link rel="prev" href="../04%20-%20Branching/">
+      
+      
+        <link rel="next" href="../temp/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Merging and Rebasing - Devopbros</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="black" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#git-branching-strategies-merging-vs-rebasing-in-detail" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Devopbros" class="md-header__button md-logo" aria-label="Devopbros" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Devopbros
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Merging and Rebasing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="black" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../00%20-%20Installing%20Python%20and%20setting%20up%20venv/" class="md-tabs__link">
+          
+  
+  
+  Progress
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Devopbros" class="md-nav__button md-logo" aria-label="Devopbros" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Devopbros
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Progress
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Progress
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00%20-%20Installing%20Python%20and%20setting%20up%20venv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installing python and setting up venv
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/Curious%20Case%20of%20-wx%20permission/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Curious Case of  wx permission
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/File%20permissions%20directories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    File permissions directories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/Group%20Commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Group Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/Source%20Command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Understanding the source Command in Unix Shells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Linux/When%20to%20use%20Double%20Quotes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    When to use Double Quotes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Quick Revision GIT
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Quick Revision GIT
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%20Setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Set-up Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02%20-%20File%20Management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Git Repository Setup and File State Management
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03%20-%20Undoing%20Things/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Undoing Things
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04%20-%20Branching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Git Branching: Advanced Guide with Internals and Best Practices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Merging and Rebasing
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Merging and Rebasing
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-what-is-git-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧭 1. What is Git Merge?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧭 1. What is Git Merge?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 Command:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Concept:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌳 Example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what-is-git-rebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔄 2. What is Git Rebase?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔄 2. What is Git Rebase?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 Command:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concept_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Concept:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌳 Example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-key-differences-between-merge-and-rebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 3. Key Differences Between Merge and Rebase
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-perils-of-rebasing-rewriting-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ 4. Perils of Rebasing (Rewriting History)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚠️ 4. Perils of Rebasing (Rewriting History)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔥 Problem:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rule-of-thumb" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Rule of Thumb:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-collaborative-workflow-example-two-developers" class="md-nav__link">
+    <span class="md-ellipsis">
+      🤝 5. Collaborative Workflow Example: Two Developers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🤝 5. Collaborative Workflow Example: Two Developers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scenario:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mermaid-diagram-merge-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Mermaid Diagram: Merge Flow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mermaid-diagram-rebase-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Mermaid Diagram: Rebase Flow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-common-commands-in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠 6. Common Commands in Practice
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠 6. Common Commands in Practice">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#merging-main-into-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      Merging main into feature:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rebasing-feature-onto-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rebasing feature onto main:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abort-a-rebase-in-progress" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abort a rebase in progress:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skip-a-commit-during-rebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Skip a commit during rebase:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolve-conflict-and-continue" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolve conflict and continue:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-rebase-with-interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 7. Rebase with Interactive Mode
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-best-practices-and-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 8. Best Practices and Recommendations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧠 8. Best Practices and Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ When to Use merge:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-rebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ When to Use rebase:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Avoid:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internals-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧮 Internals Recap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧩 Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../temp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Temp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-what-is-git-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧭 1. What is Git Merge?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧭 1. What is Git Merge?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 Command:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Concept:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌳 Example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what-is-git-rebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔄 2. What is Git Rebase?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔄 2. What is Git Rebase?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 Command:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concept_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Concept:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌳 Example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-key-differences-between-merge-and-rebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 3. Key Differences Between Merge and Rebase
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-perils-of-rebasing-rewriting-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ 4. Perils of Rebasing (Rewriting History)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚠️ 4. Perils of Rebasing (Rewriting History)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔥 Problem:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rule-of-thumb" class="md-nav__link">
+    <span class="md-ellipsis">
+      💡 Rule of Thumb:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-collaborative-workflow-example-two-developers" class="md-nav__link">
+    <span class="md-ellipsis">
+      🤝 5. Collaborative Workflow Example: Two Developers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🤝 5. Collaborative Workflow Example: Two Developers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scenario:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mermaid-diagram-merge-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Mermaid Diagram: Merge Flow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mermaid-diagram-rebase-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Mermaid Diagram: Rebase Flow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-common-commands-in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠 6. Common Commands in Practice
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠 6. Common Commands in Practice">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#merging-main-into-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      Merging main into feature:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rebasing-feature-onto-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rebasing feature onto main:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abort-a-rebase-in-progress" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abort a rebase in progress:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skip-a-commit-during-rebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Skip a commit during rebase:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolve-conflict-and-continue" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolve conflict and continue:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-rebase-with-interactive-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 7. Rebase with Interactive Mode
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-best-practices-and-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 8. Best Practices and Recommendations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧠 8. Best Practices and Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ When to Use merge:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-rebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ When to Use rebase:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Avoid:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internals-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧮 Internals Recap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧩 Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="git-branching-strategies-merging-vs-rebasing-in-detail">🔀 Git Branching Strategies: Merging vs Rebasing in Detail</h1>
+<p>Git offers two primary ways to integrate changes from one branch into another:</p>
+<ul>
+<li><code>git merge</code>: combines histories while preserving their original structure.</li>
+<li><code>git rebase</code>: re-applies your commits onto another base, rewriting history.</li>
+</ul>
+<p>Each has unique effects on your repository and collaboration model. Understanding how they work and when to use which is critical for smooth Git workflows.</p>
+<hr />
+<h2 id="1-what-is-git-merge">🧭 1. <strong>What is Git Merge?</strong></h2>
+<h3 id="command">📌 Command:</h3>
+<pre><code class="language-bash">git merge branchA
+</code></pre>
+<h3 id="concept">🔍 Concept:</h3>
+<ul>
+<li>You stay on <code>branchB</code>, and bring in all commits from <code>branchA</code>.</li>
+<li>Git creates a <strong>merge commit</strong> with two parents.</li>
+<li>The histories of both branches are preserved.</li>
+</ul>
+<h3 id="example">🌳 Example:</h3>
+<p>Suppose you are on <code>feature</code> and you merge <code>main</code> into it:</p>
+<pre><code class="language-bash">git checkout feature
+git merge main
+</code></pre>
+<p>This brings all new commits from <code>main</code> into <code>feature</code>, producing a merge commit like this:</p>
+<pre><code class="language-text">*   M  ← merge commit
+|\
+| * C  ← latest on main
+| * B
+* | A  ← last commit on feature
+|/
+* P   ← common ancestor
+</code></pre>
+<hr />
+<h2 id="2-what-is-git-rebase">🔄 2. <strong>What is Git Rebase?</strong></h2>
+<h3 id="command_1">📌 Command:</h3>
+<pre><code class="language-bash">git rebase main
+</code></pre>
+<p>This means: “Take all my current commits and replay them on top of <code>main</code>.”</p>
+<h3 id="concept_1">🔍 Concept:</h3>
+<ul>
+<li>Git finds the common ancestor of the two branches.</li>
+<li>Your commits are <strong>rebased</strong> (re-written with new parents) atop the tip of <code>main</code>.</li>
+<li>No merge commit is created.</li>
+<li>History becomes linear.</li>
+</ul>
+<h3 id="example_1">🌳 Example:</h3>
+<pre><code class="language-bash">git checkout feature
+git rebase main
+</code></pre>
+<pre><code class="language-text">Before:
+* A  ← on feature
+|
+* P  ← common ancestor
+|
+* B  ← on main
+
+After:
+* A'  ← rewritten version of A (based on B)
+* B
+* P
+</code></pre>
+<hr />
+<h2 id="3-key-differences-between-merge-and-rebase">🔍 3. <strong>Key Differences Between Merge and Rebase</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th><code>git merge</code></th>
+<th><code>git rebase</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>History</td>
+<td>Non-linear (shows divergence)</td>
+<td>Linear (one path)</td>
+</tr>
+<tr>
+<td>Commit Hashes</td>
+<td>Preserved</td>
+<td>Rewritten</td>
+</tr>
+<tr>
+<td>Conflict Resolution</td>
+<td>Once during merge</td>
+<td>Once per commit if conflicts occur</td>
+</tr>
+<tr>
+<td>Merge Commit</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Safety (Collab)</td>
+<td>Safe for shared branches</td>
+<td>Dangerous on public branches</td>
+</tr>
+<tr>
+<td>Simplicity</td>
+<td>Easier to understand</td>
+<td>Cleaner history, but riskier</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-perils-of-rebasing-rewriting-history">⚠️ 4. <strong>Perils of Rebasing (Rewriting History)</strong></h2>
+<p>Rebase rewrites commits. <strong>Never rebase a public branch that others may be using.</strong></p>
+<h3 id="problem">🔥 Problem:</h3>
+<p>If you rebase and force-push a branch that others already pulled from, they will get duplicate commits and face <strong>divergent history</strong>, resulting in:</p>
+<ul>
+<li>Duplicate commits</li>
+<li>Conflicts when they try to push</li>
+<li>Broken CI/CD if it runs on a stale branch</li>
+</ul>
+<h3 id="rule-of-thumb">💡 Rule of Thumb:</h3>
+<blockquote>
+<p>Only rebase <strong>your own local, unpublished</strong> branches.</p>
+</blockquote>
+<p>Use <code>git merge</code> for shared/public branches.</p>
+<hr />
+<h2 id="5-collaborative-workflow-example-two-developers">🤝 5. <strong>Collaborative Workflow Example: Two Developers</strong></h2>
+<h3 id="scenario">Scenario:</h3>
+<ul>
+<li>Both developers branch off <code>main</code>.</li>
+<li>Dev A makes commit <code>A1</code>, Dev B makes <code>B1</code>, <code>B2</code>.</li>
+<li>Dev A merges into <code>main</code>, Dev B now needs to sync.</li>
+</ul>
+<p>Let’s visualize this with <strong>Mermaid</strong>.</p>
+<hr />
+<h3 id="mermaid-diagram-merge-flow">📊 <strong>Mermaid Diagram: Merge Flow</strong></h3>
+<pre><code class="language-mermaid">gitGraph
+   commit id: &quot;P&quot; tag: &quot;main&quot;
+   branch devA
+   checkout devA
+   commit id: &quot;A1&quot;
+   branch devB
+   checkout devB
+   commit id: &quot;B1&quot;
+   commit id: &quot;B2&quot;
+   checkout main
+   merge devA id: &quot;M1&quot;
+   checkout devB
+   merge main id: &quot;M2&quot;
+</code></pre>
+<p>💡 Here:</p>
+<ul>
+<li>Dev A merges first.</li>
+<li>Dev B merges updated main into their branch to get A’s work.</li>
+<li>Final <code>git merge devB</code> brings everything into main.</li>
+</ul>
+<hr />
+<h3 id="mermaid-diagram-rebase-flow">📊 <strong>Mermaid Diagram: Rebase Flow</strong></h3>
+<pre><code class="language-mermaid">gitGraph
+   commit id: &quot;P&quot; tag: &quot;main&quot;
+   branch devA
+   checkout devA
+   commit id: &quot;A1&quot;
+   branch devB
+   checkout devB
+   commit id: &quot;B1&quot;
+   commit id: &quot;B2&quot;
+   checkout main
+   merge devA id: &quot;M1&quot;
+   checkout devB
+   rebase main
+   checkout main
+   merge devB id: &quot;M2&quot;
+</code></pre>
+<p>💡 Here:</p>
+<ul>
+<li>Dev A merges as before.</li>
+<li>Dev B rebases on top of updated <code>main</code> (including A1).</li>
+<li>Git replays B1, B2 on top of M1.</li>
+<li>Final merge is linear and clean.</li>
+</ul>
+<hr />
+<h2 id="6-common-commands-in-practice">🛠 6. <strong>Common Commands in Practice</strong></h2>
+<h3 id="merging-main-into-feature">Merging main into feature:</h3>
+<pre><code class="language-bash">git checkout feature
+git merge main
+</code></pre>
+<h3 id="rebasing-feature-onto-main">Rebasing feature onto main:</h3>
+<pre><code class="language-bash">git checkout feature
+git fetch origin
+git rebase origin/main
+</code></pre>
+<h3 id="abort-a-rebase-in-progress">Abort a rebase in progress:</h3>
+<pre><code class="language-bash">git rebase --abort
+</code></pre>
+<h3 id="skip-a-commit-during-rebase">Skip a commit during rebase:</h3>
+<pre><code class="language-bash">git rebase --skip
+</code></pre>
+<h3 id="resolve-conflict-and-continue">Resolve conflict and continue:</h3>
+<pre><code class="language-bash"># fix conflicts
+git add .
+git rebase --continue
+</code></pre>
+<hr />
+<h2 id="7-rebase-with-interactive-mode">📌 7. <strong>Rebase with Interactive Mode</strong></h2>
+<p>Interactive rebase allows editing, squashing, or reordering commits:</p>
+<pre><code class="language-bash">git rebase -i HEAD~3
+</code></pre>
+<p>Editor opens:</p>
+<pre><code class="language-text">pick a1 First commit
+pick a2 Second commit
+pick a3 Third commit
+</code></pre>
+<p>Change to:</p>
+<pre><code class="language-text">pick a1 First commit
+squash a2 Second commit
+pick a3 Third commit
+</code></pre>
+<p>This will combine <code>a1</code> and <code>a2</code> into a single commit.</p>
+<hr />
+<h2 id="8-best-practices-and-recommendations">🧠 8. <strong>Best Practices and Recommendations</strong></h2>
+<h3 id="when-to-use-merge">✅ When to Use <code>merge</code>:</h3>
+<ul>
+<li>Collaborating on a shared branch.</li>
+<li>Maintaining history integrity.</li>
+<li>Long-lived branches with many contributors.</li>
+</ul>
+<h3 id="when-to-use-rebase">✅ When to Use <code>rebase</code>:</h3>
+<ul>
+<li>Before merging a <strong>feature branch</strong> into <code>main</code> (only if local).</li>
+<li>To clean up your own commits before PR.</li>
+<li>For linear, readable history.</li>
+</ul>
+<h3 id="avoid">⚠️ Avoid:</h3>
+<ul>
+<li>Rebasing <code>main</code>, <code>develop</code>, or any shared branch.</li>
+<li>Force-pushing rebased branches unless coordinated.</li>
+</ul>
+<hr />
+<h2 id="internals-recap">🧮 Internals Recap</h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>What Happens Internally</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>merge</code></td>
+<td>Git creates a new merge commit with two parents.</td>
+</tr>
+<tr>
+<td><code>rebase</code></td>
+<td>Git creates new commits replaying changes onto the new base.</td>
+</tr>
+<tr>
+<td><code>HEAD</code></td>
+<td>Moved to the latest commit after merge or rebase.</td>
+</tr>
+<tr>
+<td>Conflicts</td>
+<td>Resolved via index; resolved commits are staged then continued.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="summary">🧩 Summary</h2>
+<p>Both merging and rebasing are essential tools. The choice between them is not absolute but contextual.</p>
+<ul>
+<li>Use <strong>merge</strong> when preserving branch topology is important.</li>
+<li>Use <strong>rebase</strong> for clarity in solo workflows or when preparing clean pull requests.</li>
+<li>Always be cautious when working with <strong>shared branches</strong>: rebasing can disrupt your team’s history.</li>
+</ul>
+<p>Would you like a combined <strong>real-world workflow diagram</strong> using multiple remotes, forks, and pull requests next?</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["search.suggest", "navigation.tabs", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
